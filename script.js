@@ -1,13 +1,79 @@
+const cities = [
+  {
+    name: "Abuja",
+    description: "Federal capital region with dense government and commuter traffic."
+  },
+  {
+    name: "Lagos",
+    description: "Nigeria’s busiest telecom city with very high user density."
+  },
+  {
+    name: "Kano",
+    description: "Major commercial hub with strong daytime network demand."
+  },
+  {
+    name: "Port Harcourt",
+    description: "Oil and business center with growing urban network load."
+  },
+  {
+    name: "Enugu",
+    description: "Fast-growing southeastern city with mixed residential traffic."
+  },
+  {
+    name: "Ibadan",
+    description: "Large metropolitan area with spread-out but heavy usage zones."
+  },
+  {
+    name: "Kaduna",
+    description: "Industrial and transport hub with periodic traffic spikes."
+  },
+  {
+    name: "Jos",
+    description: "Highland city with moderate load and variable signal patterns."
+  },
+  {
+    name: "Maiduguri",
+    description: "Strategic northeastern city with infrastructure-sensitive coverage."
+  },
+  {
+    name: "Benin City",
+    description: "Urban center with steady commercial and residential demand."
+  }
+];
+
+let currentCityIndex = 0;
 let towers = [];
 
-// Initialize network
+function initCityDropdown() {
+  const select = document.getElementById("citySelect");
+  select.innerHTML = "";
+
+  cities.forEach((city, index) => {
+    const option = document.createElement("option");
+    option.value = index;
+    option.textContent = city.name;
+    select.appendChild(option);
+  });
+
+  select.value = currentCityIndex;
+}
+
+function switchCity() {
+  currentCityIndex = parseInt(document.getElementById("citySelect").value);
+  initNetwork();
+}
+
 function initNetwork() {
+  const city = cities[currentCityIndex];
+  document.getElementById("cityName").innerText = city.name;
+  document.getElementById("cityDescription").innerText = city.description;
+
   const network = document.getElementById("network");
   network.innerHTML = "";
   towers = [];
 
   for (let i = 0; i < 15; i++) {
-    let load = Math.floor(Math.random() * 50);
+    let load = Math.floor(Math.random() * 60);
 
     towers.push({
       id: i,
@@ -18,21 +84,20 @@ function initNetwork() {
     const div = document.createElement("div");
     div.classList.add("tower");
     div.id = "tower-" + i;
-
     network.appendChild(div);
   }
 
   render();
 }
 
-// Render towers
 function render() {
   towers.forEach(t => {
     const el = document.getElementById("tower-" + t.id);
+    if (!el) return;
 
     if (t.status === "offline") {
       el.className = "tower offline";
-      el.innerText = "OFF";
+      el.innerText = `Tower ${t.id + 1}\nOFF`;
       return;
     }
 
@@ -40,58 +105,63 @@ function render() {
     else if (t.load < 70) el.className = "tower medium";
     else el.className = "tower high";
 
-    el.innerText = t.load + "%";
+    el.innerText = `Tower ${t.id + 1}\n${t.load}%`;
   });
 
   updateQoS();
 }
 
-// Increase traffic
 function simulateTraffic() {
   towers.forEach(t => {
     if (t.status === "active") {
-      t.load += Math.floor(Math.random() * 30);
+      t.load += Math.floor(Math.random() * 25);
       if (t.load > 100) t.load = 100;
     }
   });
   render();
 }
 
-// Simulate tower failure
 function failTower() {
-  let index = Math.floor(Math.random() * towers.length);
-  towers[index].status = "offline";
+  const activeTowers = towers.filter(t => t.status === "active");
+  if (activeTowers.length === 0) return;
+
+  const randomActive = activeTowers[Math.floor(Math.random() * activeTowers.length)];
+  randomActive.status = "offline";
   render();
 }
 
-// Optimization logic (AI simulation)
 function optimizeNetwork() {
-  let activeTowers = towers.filter(t => t.status === "active");
-
-  let overloaded = activeTowers.filter(t => t.load > 70);
-  let underused = activeTowers.filter(t => t.load < 40);
+  const activeTowers = towers.filter(t => t.status === "active");
+  const overloaded = activeTowers.filter(t => t.load > 70);
+  const underused = activeTowers.filter(t => t.load < 40);
 
   overloaded.forEach(o => {
     if (underused.length > 0) {
-      let u = underused[Math.floor(Math.random() * underused.length)];
+      const u = underused[Math.floor(Math.random() * underused.length)];
+      const shift = 20;
 
-      let shift = 20;
       o.load -= shift;
       u.load += shift;
+
+      if (o.load < 0) o.load = 0;
+      if (u.load > 100) u.load = 100;
     }
   });
 
   render();
 }
 
-// QoS calculation
 function updateQoS() {
-  let active = towers.filter(t => t.status === "active");
+  const active = towers.filter(t => t.status === "active");
 
-  let avgLoad =
-    active.reduce((sum, t) => sum + t.load, 0) / active.length;
+  if (active.length === 0) {
+    document.getElementById("qos").innerText = "0.0";
+    document.getElementById("status").innerText = "Down";
+    return;
+  }
 
-  let qos = 100 - avgLoad;
+  const avgLoad = active.reduce((sum, t) => sum + t.load, 0) / active.length;
+  const qos = 100 - avgLoad;
 
   document.getElementById("qos").innerText = qos.toFixed(1);
 
@@ -102,5 +172,5 @@ function updateQoS() {
   document.getElementById("status").innerText = status;
 }
 
-// Start
+initCityDropdown();
 initNetwork();
