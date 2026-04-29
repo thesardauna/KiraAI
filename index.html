@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Kira AI – Network Digital Twin</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<header>
+  <h1>Kira AI</h1>
+  <p>Cognitive Network Twin for QoS Optimization</p>
+</header>
+
+<div class="container">
+
+  <!-- Controls -->
+  <div class="controls">
+    <button onclick="simulateTraffic()">Increase Traffic</button>
+    <button onclick="failTower()">Simulate Tower Failure</button>
+    <button onclick="optimizeNetwork()">Optimize Network</button>
+  </div>
+
+  <!-- Network Grid -->
+  <div id="network"></div>
+
+  <!-- Stats -->
+  <div class="stats">
+    <p>QoS Score: <span id="qos">0</span></p>
+    <p>Status: <span id="status">Normal</span></p>
+  </div>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
