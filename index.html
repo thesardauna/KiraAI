@@ -3,40 +3,137 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Kira AI – Cognitive Network Digital Twin for real-time QoS optimization and network simulation." />
+  <meta name="theme-color" content="#0a0f1e" />
+
   <title>Kira AI – Network Digital Twin</title>
+
+  <!-- Preconnect for performance -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+
   <link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
-  <header>
-    <h1>Kira AI</h1>
-    <p>Cognitive Network Twin for QoS Optimization</p>
+
+  <!-- ═══════════════════════════════════════ HEADER ══ -->
+  <header class="site-header" role="banner">
+    <div class="header-inner">
+      <div class="brand">
+        <span class="brand-icon" aria-hidden="true">◈</span>
+        <div class="brand-text">
+          <h1 class="brand-name">Kira <span class="brand-accent">AI</span></h1>
+          <p class="brand-tagline">Cognitive Network Twin &amp; QoS Optimizer</p>
+        </div>
+      </div>
+      <div class="header-status" aria-live="polite" aria-label="System status">
+        <span class="status-dot" id="statusDot" aria-hidden="true"></span>
+        <span class="status-label" id="statusLabel">System Online</span>
+      </div>
+    </div>
   </header>
 
-  <div class="container">
-    <div class="topbar">
-      <label for="citySelect">Select City:</label>
-      <select id="citySelect" onchange="switchCity()"></select>
-    </div>
+  <!-- ═══════════════════════════════════════ MAIN ════ -->
+  <main class="main-content" role="main">
+    <div class="container">
 
-    <div class="controls">
-      <button onclick="simulateTraffic()">Increase Traffic</button>
-      <button onclick="failTower()">Simulate Tower Failure</button>
-      <button onclick="optimizeNetwork()">Optimize Network</button>
-    </div>
+      <!-- ── City Selector ── -->
+      <section class="topbar" aria-label="City selection">
+        <label class="select-label" for="citySelect">
+          <span class="label-icon" aria-hidden="true">⌖</span>
+          Active City Node
+        </label>
+        <div class="select-wrapper">
+          <select id="citySelect" aria-label="Select a city to monitor" onchange="switchCity()"></select>
+          <span class="select-arrow" aria-hidden="true">▾</span>
+        </div>
+      </section>
 
-    <div class="city-info">
-      <h2 id="cityName">City</h2>
-      <p id="cityDescription">Network overview</p>
-    </div>
+      <!-- ── City Info ── -->
+      <section class="city-info" aria-labelledby="cityName">
+        <div class="city-info-inner">
+          <h2 class="city-title" id="cityName">—</h2>
+          <p class="city-description" id="cityDescription">Select a city to load network overview</p>
+        </div>
+        <div class="city-badge" aria-hidden="true">LIVE</div>
+      </section>
 
-    <div id="network"></div>
+      <!-- ── Network Graph ── -->
+      <section class="network-section" aria-label="Network topology visualization">
+        <div id="network" role="img" aria-label="Interactive network topology map"></div>
+      </section>
 
-    <div class="stats">
-      <p>QoS Score: <span id="qos">0</span></p>
-      <p>Status: <span id="status">Normal</span></p>
+      <!-- ── Stats Panel ── -->
+      <aside class="stats-panel" aria-label="Network statistics">
+        <div class="stat-card">
+          <span class="stat-label">QoS Score</span>
+          <span class="stat-value" id="qos" aria-live="polite" aria-atomic="true">—</span>
+          <span class="stat-unit">/ 100</span>
+        </div>
+        <div class="stat-divider" aria-hidden="true"></div>
+        <div class="stat-card">
+          <span class="stat-label">Network Status</span>
+          <span class="stat-value stat-status" id="status" aria-live="polite" aria-atomic="true">Normal</span>
+        </div>
+      </aside>
+
+      <!-- ── Control Panel ── -->
+      <section class="controls" aria-label="Network simulation controls">
+        <h3 class="controls-heading">Simulation Controls</h3>
+        <div class="controls-grid">
+
+          <button
+            class="ctrl-btn ctrl-btn--traffic"
+            onclick="simulateTraffic()"
+            aria-label="Increase network traffic load"
+            type="button"
+          >
+            <span class="ctrl-btn-icon" aria-hidden="true">▲</span>
+            <span class="ctrl-btn-label">Increase Traffic</span>
+          </button>
+
+          <button
+            class="ctrl-btn ctrl-btn--failure"
+            onclick="failTower()"
+            aria-label="Simulate a tower failure in the network"
+            type="button"
+          >
+            <span class="ctrl-btn-icon" aria-hidden="true">⚡</span>
+            <span class="ctrl-btn-label">Tower Failure</span>
+          </button>
+
+          <button
+            class="ctrl-btn ctrl-btn--optimize"
+            onclick="optimizeNetwork()"
+            aria-label="Run AI network optimization"
+            type="button"
+          >
+            <span class="ctrl-btn-icon" aria-hidden="true">◈</span>
+            <span class="ctrl-btn-label">Optimize Network</span>
+          </button>
+
+        </div>
+      </section>
+
     </div>
-  </div>
+  </main>
+
+  <!-- ═══════════════════════════════════════ FOOTER ══ -->
+  <footer class="site-footer" role="contentinfo">
+    <p class="footer-text">
+      <span class="footer-brand">Kira AI</span>
+      &mdash; Network Digital Twin Engine &mdash;
+      <span class="footer-copy">&copy; <span id="footerYear"></span></span>
+    </p>
+  </footer>
 
   <script src="script.js"></script>
+  <script>
+    // Inline only: non-application utility
+    document.getElementById('footerYear').textContent = new Date().getFullYear();
+  </script>
+
 </body>
 </html>
