@@ -1,176 +1,81 @@
-const cities = [
-  {
-    name: "Abuja",
-    description: "Federal capital region with dense government and commuter traffic."
-  },
-  {
-    name: "Lagos",
-    description: "Nigeria’s busiest telecom city with very high user density."
-  },
-  {
-    name: "Kano",
-    description: "Major commercial hub with strong daytime network demand."
-  },
-  {
-    name: "Port Harcourt",
-    description: "Oil and business center with growing urban network load."
-  },
-  {
-    name: "Enugu",
-    description: "Fast-growing southeastern city with mixed residential traffic."
-  },
-  {
-    name: "Ibadan",
-    description: "Large metropolitan area with spread-out but heavy usage zones."
-  },
-  {
-    name: "Kaduna",
-    description: "Industrial and transport hub with periodic traffic spikes."
-  },
-  {
-    name: "Jos",
-    description: "Highland city with moderate load and variable signal patterns."
-  },
-  {
-    name: "Maiduguri",
-    description: "Strategic northeastern city with infrastructure-sensitive coverage."
-  },
-  {
-    name: "Benin City",
-    description: "Urban center with steady commercial and residential demand."
-  }
-];
-
-let currentCityIndex = 0;
-let towers = [];
-
-function initCityDropdown() {
-  const select = document.getElementById("citySelect");
-  select.innerHTML = "";
-
-  cities.forEach((city, index) => {
-    const option = document.createElement("option");
-    option.value = index;
-    option.textContent = city.name;
-    select.appendChild(option);
-  });
-
-  select.value = currentCityIndex;
+body {
+  font-family: Arial, sans-serif;
+  background: #0b0f1a;
+  color: white;
+  text-align: center;
+  margin: 0;
+  padding: 0;
 }
 
-function switchCity() {
-  currentCityIndex = parseInt(document.getElementById("citySelect").value);
-  initNetwork();
+header {
+  padding: 20px;
 }
 
-function initNetwork() {
-  const city = cities[currentCityIndex];
-  document.getElementById("cityName").innerText = city.name;
-  document.getElementById("cityDescription").innerText = city.description;
-
-  const network = document.getElementById("network");
-  network.innerHTML = "";
-  towers = [];
-
-  for (let i = 0; i < 15; i++) {
-    let load = Math.floor(Math.random() * 60);
-
-    towers.push({
-      id: i,
-      load: load,
-      status: "active"
-    });
-
-    const div = document.createElement("div");
-    div.classList.add("tower");
-    div.id = "tower-" + i;
-    network.appendChild(div);
-  }
-
-  render();
+.container {
+  width: 90%;
+  max-width: 1100px;
+  margin: auto;
 }
 
-function render() {
-  towers.forEach(t => {
-    const el = document.getElementById("tower-" + t.id);
-    if (!el) return;
-
-    if (t.status === "offline") {
-      el.className = "tower offline";
-      el.innerText = `Tower ${t.id + 1}\nOFF`;
-      return;
-    }
-
-    if (t.load < 40) el.className = "tower low";
-    else if (t.load < 70) el.className = "tower medium";
-    else el.className = "tower high";
-
-    el.innerText = `Tower ${t.id + 1}\n${t.load}%`;
-  });
-
-  updateQoS();
+.topbar {
+  margin-bottom: 15px;
 }
 
-function simulateTraffic() {
-  towers.forEach(t => {
-    if (t.status === "active") {
-      t.load += Math.floor(Math.random() * 25);
-      if (t.load > 100) t.load = 100;
-    }
-  });
-  render();
+select {
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  margin-left: 10px;
 }
 
-function failTower() {
-  const activeTowers = towers.filter(t => t.status === "active");
-  if (activeTowers.length === 0) return;
-
-  const randomActive = activeTowers[Math.floor(Math.random() * activeTowers.length)];
-  randomActive.status = "offline";
-  render();
+.controls button {
+  margin: 10px;
+  padding: 12px 16px;
+  border: none;
+  cursor: pointer;
+  border-radius: 8px;
+  background: #1f6feb;
+  color: white;
+  font-weight: bold;
 }
 
-function optimizeNetwork() {
-  const activeTowers = towers.filter(t => t.status === "active");
-  const overloaded = activeTowers.filter(t => t.load > 70);
-  const underused = activeTowers.filter(t => t.load < 40);
-
-  overloaded.forEach(o => {
-    if (underused.length > 0) {
-      const u = underused[Math.floor(Math.random() * underused.length)];
-      const shift = 20;
-
-      o.load -= shift;
-      u.load += shift;
-
-      if (o.load < 0) o.load = 0;
-      if (u.load > 100) u.load = 100;
-    }
-  });
-
-  render();
+.controls button:hover {
+  opacity: 0.9;
 }
 
-function updateQoS() {
-  const active = towers.filter(t => t.status === "active");
-
-  if (active.length === 0) {
-    document.getElementById("qos").innerText = "0.0";
-    document.getElementById("status").innerText = "Down";
-    return;
-  }
-
-  const avgLoad = active.reduce((sum, t) => sum + t.load, 0) / active.length;
-  const qos = 100 - avgLoad;
-
-  document.getElementById("qos").innerText = qos.toFixed(1);
-
-  let status = "Good";
-  if (qos < 60) status = "Moderate";
-  if (qos < 40) status = "Poor";
-
-  document.getElementById("status").innerText = status;
+.city-info {
+  margin: 20px 0;
+  padding: 15px;
+  background: #121a2a;
+  border-radius: 12px;
 }
 
-initCityDropdown();
-initNetwork();
+#network {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.tower {
+  height: 90px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: bold;
+  text-align: center;
+  padding: 8px;
+}
+
+.low { background: #1f8f4a; }
+.medium { background: #d98b1a; }
+.high { background: #c0392b; }
+.offline { background: #6b6b6b; }
+
+.stats {
+  margin-top: 20px;
+  font-size: 18px;
+  padding-bottom: 30px;
+}
